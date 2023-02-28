@@ -18,39 +18,23 @@ import React from "react";
 import { TaskForm } from "./components/TaskForm";
 import ListItem from "@mui/material/ListItem";
 import { Folder, Delete, Edit } from "@mui/icons-material";
-import { deleteTask, fetchTasks, patchTask } from "./api";
+import { deleteTask, patchTask } from "./api";
+import { useTaskController } from "./controller";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [tasks, setTasks] = React.useState<Array<Task>>([]);
-  const [isPopupOpen, setIsPopupOpen] = React.useState<boolean>(false);
-  const [editedTask, setEditedTask] = React.useState<Task>({
-    title: "",
-  });
-  const [isBeingEdited, setIsBeingEdited] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    async function fetchData() {
-      // Get tasks
-      let fetchedTasks: Task[] | undefined = await fetchTasks();
-      if (fetchedTasks) {
-        setTasks(fetchedTasks);
-      }
-    }
-    fetchData();
-  }, []);
-
-  function editTask(task: Task) {
-    setIsPopupOpen(true);
-    setEditedTask(task);
-    setIsBeingEdited(true);
-  }
-
-  async function reverseCompleted(task: Task) {
-    const newTask: Task = { ...task, isCompleted: !task.isCompleted };
-    await patchTask(newTask);
-  }
+  const {
+    isPopupOpen,
+    editTask,
+    createTask,
+    tasks,
+    onCancel,
+    reverseCompleted,
+    onSave,
+    editedTask,
+    saveText,
+  } = useTaskController();
 
   return (
     <>
@@ -63,9 +47,7 @@ export default function Home() {
       <Header />
       <div className="mt-12 flex flex-col items-center">
         <Button
-          onClick={() => {
-            setIsPopupOpen(true);
-          }}
+          onClick={createTask}
           className="bg-blue-500"
           color="primary"
           variant="contained"
@@ -75,7 +57,7 @@ export default function Home() {
       </div>
       <Grid item xs={12} md={6}>
         <List dense={true}>
-          {tasks.map((task) => (
+          {tasks.map((task: Task) => (
             <ListItem
               key={task.id}
               secondaryAction={
@@ -113,19 +95,14 @@ export default function Home() {
       {isPopupOpen && (
         <>
           <div
-            onClick={() => {
-              setIsPopupOpen(false);
-              setIsBeingEdited(false);
-              setEditedTask({ title: "" });
-            }}
+            onClick={onCancel}
             className="fixed w-full h-full bg-black top-0 bg-opacity-20 z-30"
           ></div>
           <TaskForm
-            setEditedTask={setEditedTask}
-            setIsBeingEdited={setIsBeingEdited}
-            isBeingEdited={isBeingEdited}
+            onCancel={onCancel}
+            onSave={onSave}
             editedTask={editedTask}
-            setIsPopupOpen={setIsPopupOpen}
+            saveText={saveText}
           />
         </>
       )}

@@ -19,10 +19,11 @@ export async function deleteTask(id: string) {
   window.location.reload();
 }
 
-export async function patchTask(newTask: Task) {
+export async function patchTask(newTask: Task, id:string) {
   let response;
+  console.log(newTask)
   try {
-    response = await fetch(`https://todo.crudful.com/tasks/${newTask.id}`, {
+    response = await fetch(`https://todo.crudful.com/tasks/${id}`, {
       method: "PATCH",
       headers: {
         cfAccessKey: process.env.NEXT_PUBLIC_CF_ACCESS_KEY!,
@@ -53,7 +54,7 @@ export async function fetchTasks(): Promise<Task[] | undefined> {
   }
 }
 
-export async function createTask(task:Task) {
+export async function postTask(task:Task) {
   let response = await fetch("https://todo.crudful.com/tasks", {
     method: "POST",
     headers: {

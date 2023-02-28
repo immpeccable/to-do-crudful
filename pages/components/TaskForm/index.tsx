@@ -1,21 +1,14 @@
 import { Task } from "@/pages/types";
 import React, { useRef } from "react";
 import { TextField, Button } from "@mui/material";
-import { createTask, patchTask } from "@/pages/api";
+import { useTaskController } from "@/pages/controller";
 
 export const TaskForm: React.FC<{
-  setIsPopupOpen: (val: boolean) => void;
   editedTask: Task;
-  isBeingEdited: boolean;
-  setIsBeingEdited: (val: boolean) => void;
-  setEditedTask: (task: Task) => void;
-}> = ({
-  setIsPopupOpen,
-  editedTask,
-  isBeingEdited,
-  setIsBeingEdited,
-  setEditedTask,
-}) => {
+  onSave: (task: Task) => void;
+  onCancel: () => void;
+  saveText: string;
+}> = ({ editedTask, onSave, onCancel, saveText }) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
   const detailsRef = useRef<HTMLInputElement>(null);
@@ -25,7 +18,7 @@ export const TaskForm: React.FC<{
       title: titleRef.current!.value,
       details: detailsRef.current!.value,
       due: dateRef.current!.value,
-      isCompleted: false,
+      isCompleted: editedTask.isCompleted,
     };
     return taskData;
   }
@@ -86,21 +79,14 @@ export const TaskForm: React.FC<{
       <Button
         className="bg-blue-500"
         variant="contained"
-        onClick={() => {
-          const currentData = getCurrentTaskData();
-          isBeingEdited ? patchTask(currentData) : createTask(currentData);
-        }}
+        onClick={() => onSave(getCurrentTaskData())}
       >
-        {isBeingEdited ? "Edit Task" : "Create Task"}
+        {saveText}
       </Button>
       <Button
         className="bg-red-500"
         variant="contained"
-        onClick={() => {
-          setIsPopupOpen(false);
-          setIsBeingEdited(false);
-          setEditedTask({ title: "" });
-        }}
+        onClick={onCancel}
         color="error"
       >
         Cancel
