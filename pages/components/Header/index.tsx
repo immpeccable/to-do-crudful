@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import toDoLogo from "../../utils/images/list.png";
+import Image from "next/image";
 
 export default function Header() {
   return (
@@ -20,7 +21,7 @@ export default function Header() {
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <img style={{ width: "32px", height: "32px" }} src={toDoLogo.src} />
+            <Image src={toDoLogo} alt="to-do-logo" width={40} height={40} />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             To Do List with Crudful
