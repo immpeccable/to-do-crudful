@@ -1,7 +1,6 @@
 import { Task } from "@/pages/types";
 import React, { useRef } from "react";
 import { TextField, Button } from "@mui/material";
-import { useTaskController } from "@/pages/controller";
 
 export const TaskForm: React.FC<{
   editedTask: Task;
@@ -18,7 +17,7 @@ export const TaskForm: React.FC<{
       title: titleRef.current!.value,
       details: detailsRef.current!.value,
       due: dateRef.current!.value,
-      isCompleted: editedTask.isCompleted,
+      isCompleted: false,
     };
     return taskData;
   }

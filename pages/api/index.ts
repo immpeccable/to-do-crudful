@@ -35,7 +35,6 @@ export async function patchTask(newTask: Task, id:string) {
   } catch (e) {
     console.error(e);
   }
-  console.log("patch response: ", response);
 }
 
 export async function fetchTasks(): Promise<Task[] | undefined> { 
@@ -55,15 +54,18 @@ export async function fetchTasks(): Promise<Task[] | undefined> {
 }
 
 export async function postTask(task:Task) {
-  let response = await fetch("https://todo.crudful.com/tasks", {
-    method: "POST",
-    headers: {
-      cfAccessKey: process.env.NEXT_PUBLIC_CF_ACCESS_KEY!,
-      "Content-Type": contentType,
-    },
-    body: JSON.stringify(task),
-  });
+  let response:any;
+  try {
+   response = await fetch("https://todo.crudful.com/tasks", {
+      method: "POST",
+      headers: {
+        cfAccessKey: process.env.NEXT_PUBLIC_CF_ACCESS_KEY!,
+        "Content-Type": contentType,
+      },
+      body: JSON.stringify(task),
+    });
+  } catch (e) {
+    console.error(e);
+  }
   response = await response.json();
-  console.log("create response: ", response);
-  window.location.reload();
 }
