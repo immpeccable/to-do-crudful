@@ -1,6 +1,6 @@
 import { Task } from "../../utils/types";
 
-const CF_ACCESS_KEY: string = process.env.NEXT_PUBLIC_CF_ACCESS_KEY!;
+const CF_ACCESS_KEY: string = "661ae1d23bad306eb39ebbc593464bc900fe2c2d";
 const contentType = "application/json";
 
 export async function deleteTask(id: string) {
@@ -8,7 +8,7 @@ export async function deleteTask(id: string) {
     let response = await fetch(`https://todo.crudful.com/tasks/${id}`, {
       method: "DELETE",
       headers: {
-        cfAccessKey: CF_ACCESS_KEY!,
+        cfAccessKey: CF_ACCESS_KEY,
       },
     });
     response = await response.json();
@@ -26,7 +26,7 @@ export async function patchTask(newTask: Task, id:string) {
     response = await fetch(`https://todo.crudful.com/tasks/${id}`, {
       method: "PATCH",
       headers: {
-        cfAccessKey: process.env.NEXT_PUBLIC_CF_ACCESS_KEY!,
+        cfAccessKey: CF_ACCESS_KEY,
         "Content-Type": contentType,
       },
       body: JSON.stringify(newTask),
@@ -44,7 +44,7 @@ export async function fetchTasks(): Promise<Task[] | undefined> {
     response = await fetch("https://todo.crudful.com/tasks?ordering=due", {
       method: "GET",
       headers: {
-        cfAccessKey: CF_ACCESS_KEY!,
+        cfAccessKey: CF_ACCESS_KEY,
       },
     }).then((response) => response.json());
     return response.results as Task[]
@@ -59,7 +59,7 @@ export async function postTask(task:Task) {
    response = await fetch("https://todo.crudful.com/tasks", {
       method: "POST",
       headers: {
-        cfAccessKey: process.env.NEXT_PUBLIC_CF_ACCESS_KEY!,
+        cfAccessKey: CF_ACCESS_KEY,
         "Content-Type": contentType,
       },
       body: JSON.stringify(task),
