@@ -22,9 +22,6 @@ import { deleteTask, fetchTasks, patchTask } from "./api";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const CF_ACCESS_KEY: string = process.env.NEXT_PUBLIC_CF_ACCESS_KEY!;
-const contentType = "application/json";
-
 export default function Home() {
   const [tasks, setTasks] = React.useState<Array<Task>>([]);
   const [isPopupOpen, setIsPopupOpen] = React.useState<boolean>(false);
@@ -107,6 +104,7 @@ export default function Home() {
                 />
               </ListItemAvatar>
               <ListItemText primary={task.title} secondary={task.details} />
+              <ListItemText primary={`Due: ${task.due?.slice(0, 10)}`} />
             </ListItem>
           ))}
         </List>
@@ -117,10 +115,14 @@ export default function Home() {
           <div
             onClick={() => {
               setIsPopupOpen(false);
+              setIsBeingEdited(false);
+              setEditedTask({ title: "" });
             }}
             className="fixed w-full h-full bg-black top-0 bg-opacity-20 z-30"
           ></div>
           <TaskForm
+            setEditedTask={setEditedTask}
+            setIsBeingEdited={setIsBeingEdited}
             isBeingEdited={isBeingEdited}
             editedTask={editedTask}
             setIsPopupOpen={setIsPopupOpen}

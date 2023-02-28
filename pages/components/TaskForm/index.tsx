@@ -3,13 +3,19 @@ import React, { useRef } from "react";
 import { TextField, Button } from "@mui/material";
 import { createTask, patchTask } from "@/pages/api";
 
-const contentType = "application/json";
-
 export const TaskForm: React.FC<{
   setIsPopupOpen: (val: boolean) => void;
   editedTask: Task;
   isBeingEdited: boolean;
-}> = ({ setIsPopupOpen, editedTask, isBeingEdited }) => {
+  setIsBeingEdited: (val: boolean) => void;
+  setEditedTask: (task: Task) => void;
+}> = ({
+  setIsPopupOpen,
+  editedTask,
+  isBeingEdited,
+  setIsBeingEdited,
+  setEditedTask,
+}) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
   const detailsRef = useRef<HTMLInputElement>(null);
@@ -90,7 +96,11 @@ export const TaskForm: React.FC<{
       <Button
         className="bg-red-500"
         variant="contained"
-        onClick={(e: React.MouseEvent) => setIsPopupOpen(false)}
+        onClick={() => {
+          setIsPopupOpen(false);
+          setIsBeingEdited(false);
+          setEditedTask({ title: "" });
+        }}
         color="error"
       >
         Cancel
