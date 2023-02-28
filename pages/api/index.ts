@@ -1,4 +1,4 @@
-import { Task } from "../types";
+import { Task } from "../../utils/types";
 
 const CF_ACCESS_KEY: string = process.env.NEXT_PUBLIC_CF_ACCESS_KEY!;
 const contentType = "application/json";

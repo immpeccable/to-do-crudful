@@ -1,4 +1,4 @@
-import { Task } from "@/pages/types";
+import { Task } from "@/utils/types";
 import React, { useRef } from "react";
 import { TextField, Button } from "@mui/material";
 

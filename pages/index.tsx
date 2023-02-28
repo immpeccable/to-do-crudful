@@ -1,27 +1,21 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
-import Header from "./components/Header";
+import Header from "../components/Header";
 import {
   Button,
   Grid,
   ListItemText,
   ListItemAvatar,
-  Avatar,
   IconButton,
-  Typography,
   List,
   Checkbox,
 } from "@mui/material";
-import { Task } from "./types";
+import { Task } from "../utils/types";
 import React from "react";
-import { TaskForm } from "./components/TaskForm";
+import { TaskForm } from "../components/TaskForm";
 import ListItem from "@mui/material/ListItem";
-import { Folder, Delete, Edit } from "@mui/icons-material";
-import { deleteTask, patchTask } from "./api";
-import { useTaskController } from "./controller";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Delete, Edit } from "@mui/icons-material";
+import { deleteTask } from "./api";
+import { useTaskController } from "../controller";
 
 export default function Home() {
   const {

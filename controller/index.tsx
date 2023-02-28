@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { patchTask, postTask, fetchTasks } from "../api";
-import { Task } from "../types";
+import { patchTask, postTask, fetchTasks } from "@/pages/api";
+import { Task } from "@/utils/types";
 
 export function useTaskController() {
   const [tasks, setTasks] = React.useState<Array<Task>>([]);
