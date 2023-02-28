@@ -1,29 +1,27 @@
 import { Task } from "@/pages/types";
 import React, { useRef } from "react";
 import { TextField, Button } from "@mui/material";
+import { createTask, patchTask } from "@/pages/api";
 
 const contentType = "application/json";
 
-export const TaskForm: React.FC = () => {
+export const TaskForm: React.FC<{
+  setIsPopupOpen: (val: boolean) => void;
+  editedTask: Task;
+  isBeingEdited: boolean;
+}> = ({ setIsPopupOpen, editedTask, isBeingEdited }) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
   const detailsRef = useRef<HTMLInputElement>(null);
 
-  async function createTask(e: React.MouseEvent) {
+  function getCurrentTaskData(): Task {
     const taskData: Task = {
       title: titleRef.current!.value,
       details: detailsRef.current!.value,
       due: dateRef.current!.value,
       isCompleted: false,
     };
-    fetch("https://todo.crudful.com/tasks", {
-      method: "POST",
-      headers: {
-        cfAccessKey: process.env.NEXT_PUBLIC_CF_ACCESS_KEY!,
-        "Content-Type": contentType,
-      },
-      body: JSON.stringify(taskData), // convert task data to JSON string
-    });
+    return taskData;
   }
   return (
     <form
@@ -42,6 +40,8 @@ export const TaskForm: React.FC = () => {
           name="title"
           id="title"
           variant="outlined"
+          defaultValue={editedTask.title || ""}
+          required
         />
       </div>
       <div className="w-80 justify-between gap-4 flex flex-row">
@@ -58,6 +58,7 @@ export const TaskForm: React.FC = () => {
           name="details"
           id="details"
           variant="outlined"
+          defaultValue={editedTask.details || ""}
         />
       </div>
       <div className="w-80 justify-between gap-4 flex flex-row items-center">
@@ -69,18 +70,30 @@ export const TaskForm: React.FC = () => {
         </label>
         <input
           ref={dateRef}
-          name="due-data"
-          id="due-data"
+          name="due-date"
+          id="due-date"
           className="border-black border-[1px] p-[12px] rounded-md border-opacity-40"
           type="date"
+          defaultValue={editedTask.due || ""}
         />
       </div>
       <Button
         className="bg-blue-500"
         variant="contained"
-        onClick={(e: React.MouseEvent) => createTask(e)}
+        onClick={() => {
+          const currentData = getCurrentTaskData();
+          isBeingEdited ? patchTask(currentData) : createTask(currentData);
+        }}
       >
-        Contained
+        {isBeingEdited ? "Edit Task" : "Create Task"}
+      </Button>
+      <Button
+        className="bg-red-500"
+        variant="contained"
+        onClick={(e: React.MouseEvent) => setIsPopupOpen(false)}
+        color="error"
+      >
+        Cancel
       </Button>
     </form>
   );

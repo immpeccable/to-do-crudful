@@ -2,32 +2,58 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import Header from "./components/Header";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Grid,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  IconButton,
+  Typography,
+  List,
+  Checkbox,
+} from "@mui/material";
 import { Task } from "./types";
 import React from "react";
 import { TaskForm } from "./components/TaskForm";
+import ListItem from "@mui/material/ListItem";
+import { Folder, Delete, Edit } from "@mui/icons-material";
+import { deleteTask, fetchTasks, patchTask } from "./api";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const CF_ACCESS_KEY: string = process.env.NEXT_PUBLIC_CF_ACCESS_KEY!;
+const contentType = "application/json";
 
 export default function Home() {
   const [tasks, setTasks] = React.useState<Array<Task>>([]);
   const [isPopupOpen, setIsPopupOpen] = React.useState<boolean>(false);
+  const [editedTask, setEditedTask] = React.useState<Task>({
+    title: "",
+  });
+  const [isBeingEdited, setIsBeingEdited] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     async function fetchData() {
       // Get tasks
-      let response = await fetch("https://todo.crudful.com/tasks", {
-        method: "GET",
-        headers: {
-          cfAccessKey: CF_ACCESS_KEY!,
-        },
-      }).then((response) => response.json());
-      setTasks(response.results);
+      let fetchedTasks: Task[] | undefined = await fetchTasks();
+      if (fetchedTasks) {
+        setTasks(fetchedTasks);
+      }
     }
     fetchData();
   }, []);
+
+  function editTask(task: Task) {
+    setIsPopupOpen(true);
+    setEditedTask(task);
+    setIsBeingEdited(true);
+  }
+
+  async function reverseCompleted(task: Task) {
+    const newTask: Task = { ...task, isCompleted: !task.isCompleted };
+    await patchTask(newTask);
+  }
 
   return (
     <>
@@ -50,6 +76,42 @@ export default function Home() {
           Create Task
         </Button>
       </div>
+      <Grid item xs={12} md={6}>
+        <List dense={true}>
+          {tasks.map((task) => (
+            <ListItem
+              key={task.id}
+              secondaryAction={
+                <div className="flex flex-row gap-4">
+                  <IconButton
+                    onClick={() => editTask(task)}
+                    edge="end"
+                    aria-label="delete"
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => deleteTask(task.id!)}
+                    edge="end"
+                    aria-label="delete"
+                  >
+                    <Delete />
+                  </IconButton>
+                </div>
+              }
+            >
+              <ListItemAvatar>
+                <Checkbox
+                  defaultChecked={task.isCompleted}
+                  onClick={() => reverseCompleted(task)}
+                />
+              </ListItemAvatar>
+              <ListItemText primary={task.title} secondary={task.details} />
+            </ListItem>
+          ))}
+        </List>
+      </Grid>
+
       {isPopupOpen && (
         <>
           <div
@@ -58,7 +120,11 @@ export default function Home() {
             }}
             className="fixed w-full h-full bg-black top-0 bg-opacity-20 z-30"
           ></div>
-          <TaskForm />
+          <TaskForm
+            isBeingEdited={isBeingEdited}
+            editedTask={editedTask}
+            setIsPopupOpen={setIsPopupOpen}
+          />
         </>
       )}
     </>
