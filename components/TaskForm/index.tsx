@@ -15,10 +15,16 @@ export const TaskForm: React.FC<{
   function getCurrentTaskData(): Task {
     const taskData: Task = {
       title: titleRef.current!.value,
-      details: detailsRef.current!.value,
-      due: dateRef.current!.value,
+      // details: detailsRef.current!.value,
+      // due: dateRef.current!.value,
       isCompleted: false,
     };
+    if (detailsRef.current!.value) {
+      taskData["details"] = detailsRef.current!.value;
+    }
+    if (dateRef.current!.value) {
+      taskData["due"] = dateRef.current!.value;
+    }
     return taskData;
   }
   return (

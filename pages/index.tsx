@@ -80,7 +80,9 @@ export default function Home() {
                 />
               </ListItemAvatar>
               <ListItemText primary={task.title} secondary={task.details} />
-              <ListItemText primary={`Due: ${task.due?.slice(0, 10)}`} />
+              {task.due && (
+                <ListItemText primary={`Due: ${task.due?.slice(0, 10)}`} />
+              )}
             </ListItem>
           ))}
         </List>
